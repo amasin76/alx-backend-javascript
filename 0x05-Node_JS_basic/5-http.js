@@ -6,7 +6,6 @@ const HOST = 'localhost';
 const app = http.createServer();
 const DB_FILE = process.argv.length > 2 ? process.argv[2] : '';
 
-
 const countStudents = (dataPath) => new Promise((resolve, reject) => {
   if (!dataPath) {
     reject(new Error('Cannot load the database'));
@@ -48,11 +47,13 @@ const countStudents = (dataPath) => new Promise((resolve, reject) => {
         );
         reportParts.push(`Number of students: ${totalStudents}`);
         for (const [field, group] of Object.entries(studentGroups)) {
-          reportParts.push([
-            `Number of students in ${field}: ${group.length}.`,
-            'List:',
-            group.map((student) => student.firstname).join(', '),
-          ].join(' '));
+          reportParts.push(
+            [
+              `Number of students in ${field}: ${group.length}.`,
+              'List:',
+              group.map((student) => student.firstname).join(', '),
+            ].join(' '),
+          );
         }
         resolve(reportParts.join('\n'));
       }
@@ -87,7 +88,9 @@ const SERVER_ROUTE_HANDLERS = [
           res.write(Buffer.from(responseText));
         })
         .catch((err) => {
-          responseParts.push(err instanceof Error ? err.message : err.toString());
+          responseParts.push(
+            err instanceof Error ? err.message : err.toString(),
+          );
           const responseText = responseParts.join('\n');
           res.setHeader('Content-Type', 'text/plain');
           res.setHeader('Content-Length', responseText.length);
